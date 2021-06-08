@@ -7,11 +7,7 @@
  * 
  */
 
-// act[0] : BoxPointer의 방향을 정해주는 값 (0~4)
-// act[1] : 1이면 BoxPointer가 정지, (0~1)
-// act[2] : 1이면 BoxPointer의 위치에서 box가 텔레포트, (0~1)
-// act[3] : spped? 필요없는 액션 
-
+// act[0] : BoxPointer의 방향을 정해주는 값 (0~5) 1~4는 x,z 이동 5는 Box 생성
 
 using System.Collections;
 using System.Collections.Generic;
@@ -159,18 +155,19 @@ public class BoxStack8_sy_20210608 : Agent
                 dirToGo = -1f * transform.right * speed * 0.1f;
                 break;
             case 5:
-                dirToGo = 1f * transform.up * speed * 0.1f;
+                Box_list[BoxIndex].transform.position = new Vector3(BoxPointer.transform.position.x, BoxIndex * 1.5f, BoxPointer.transform.position.z);
+                rb_list[BoxIndex].constraints = RigidbodyConstraints.None;
+                rb_list[BoxIndex].useGravity = true;
                 break;
-            case 6:
-                dirToGo = -1f * transform.up * speed * 0.1f;
-                break;
+
+
 
         }
 
         r_BoxPointer.AddForce(dirToGo * speed, ForceMode.VelocityChange);
     }
 
-    public void StopBoxPointer(ActionSegment<int> act)
+    /*public void StopBoxPointer(ActionSegment<int> act)
     {
         //AddReward(0.001f);
         var Stop = act[1];
@@ -182,7 +179,7 @@ public class BoxStack8_sy_20210608 : Agent
         //Debug.Log("Stop act[3] : " + Stop);
 
     }
-
+    /*
     public void MoveBox(ActionSegment<int> act)
     {
         //AddReward(0.001f);
@@ -197,7 +194,7 @@ public class BoxStack8_sy_20210608 : Agent
         }
         //Debug.Log("TeleportBox act[2] : " + TeleportBox);
     }
-
+    */
     public override void OnActionReceived(ActionBuffers actions)
     {
         /*
@@ -241,12 +238,12 @@ public class BoxStack8_sy_20210608 : Agent
             MoveAgent(actions.DiscreteActions);
             if (!Box_Stacked_list[BoxIndex])
             {
-                StopBoxPointer(actions.DiscreteActions);
+                //StopBoxPointer(actions.DiscreteActions);
                 //StopPointer();
                 float[] BoxSize = box_size_scaler(Box_list[BoxIndex]);
                 if (!CheckIsThereBox(BoxPointer, BoxSize))
                 {
-                    MoveBox(actions.DiscreteActions);
+                    //MoveBox(actions.DiscreteActions);
                     //Vector3 pos_BoxPointer = new Vector3(BoxPointer.transform.position.x, BoxPointer.transform.position.y, BoxPointer.transform.position.z);
                     //Box_list[BoxIndex].transform.position = new Vector3(pos_BoxPointer.x, 1.5f, pos_BoxPointer.z);
                     //rb_list[BoxIndex].useGravity = true;
@@ -373,37 +370,46 @@ public class BoxStack8_sy_20210608 : Agent
 
         return Box_Size;
     }
+
+    // act[0] : BoxPointer의 방향을 정해주는 값 (0~4)
+    // act[1] : 1이면 BoxPointer가 정지, (0~1)
+    // act[2] : 1이면 BoxPointer의 위치에서 box가 텔레포트, (0~1)
+    // act[3] : spped? 필요없는 액션 
     public override void Heuristic(in ActionBuffers actionsOut)
     {
         var discreteActionsOut = actionsOut.DiscreteActions;
-        discreteActionsOut.Clear();
-        if (Input.GetKey(KeyCode.UpArrow))
+        if (Input.GetKey(KeyCode.W))
         {
             discreteActionsOut[0] = 1;
         }
-        if (Input.GetKey(KeyCode.DownArrow))
+        if (Input.GetKey(KeyCode.S))
         {
             discreteActionsOut[0] = 2;
         }
 
-        if (Input.GetKey(KeyCode.LeftArrow))
+        if (Input.GetKey(KeyCode.D))
         {
             discreteActionsOut[0] = 3;
         }
-        if (Input.GetKey(KeyCode.RightArrow))
+        if (Input.GetKey(KeyCode.A))
         {
             discreteActionsOut[0] = 4;
         }
-        if (Input.GetKey(KeyCode.LeftShift))
-            discreteActionsOut[0] = 5;
-        if (Input.GetKey(KeyCode.LeftControl))
-            discreteActionsOut[0] = 6;
-        if (Input.GetKey(KeyCode.S))
-            discreteActionsOut[1] = 1;
         if (Input.GetKey(KeyCode.Space))
         {
-            discreteActionsOut[2] = 1;
+        discreteActionsOut[0] = 5;
         }
+
+        ////if (Input.GetKey(KeyCode.LeftShift))
+        //    discreteActionsOut[0] = 5;
+        //if (Input.GetKey(KeyCode.LeftControl))
+        //    discreteActionsOut[0] = 6;
+        //if (Input.GetKey(KeyCode.S))
+        //    discreteActionsOut[1] = 1;
+        //if (Input.GetKey(KeyCode.Space))
+        //{
+        //    discreteActionsOut[2] = 1;
+    
 
     }
     IEnumerator WaitTime(float t)
