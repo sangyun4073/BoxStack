@@ -28,8 +28,14 @@ public class HitVirtualWall : MonoBehaviour
     {
         if(collision.gameObject.CompareTag("Wall"))
         {
-            //Debug.Log("Collide with wall, Set Reward -1");
+            Debug.Log("Collide with wall, Set Reward -1");
             agent_script.SetReward(-1.0f);
+            agent_script.EndEpisode();
+        }
+
+        if (collision.gameObject.CompareTag("BoxPoiv hjjnter"))
+        {
+            agent_script.AddReward(-0.5f);
             agent_script.EndEpisode();
         }
 

@@ -29,6 +29,9 @@ TagManager:
   - symbol_O_Goal
   - purpleAgent
   - purpleGoal
+  - Box
+  - Wall
+  - BoxPointer
   layers:
   - Default
   - TransparentFX
